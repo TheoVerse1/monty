@@ -1,50 +1,67 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "monty.h"
 
-#define STACK_SIZE 100
+int usage_error(void);
+int malloc_error(void);
+int f_open_error(char *filename);
+int unknown_op_error(char *opcode, unsigned int line_number);
+int no_int_error(unsigned int line_number);
 
-int stack[STACK_SIZE];
-int top = -1;
-
-void push(int value) {
-    if (top >= STACK_SIZE - 1) {
-        fprintf(stderr, "Stack overflow\n");
-        exit(EXIT_FAILURE);
-    }
-    stack[++top] = value;
+/**
+ * usage_error - Prints usage error messages.
+ *
+ * Return: Always returns EXIT_FAILURE.
+ */
+int usage_error(void)
+{
+    fprintf(stderr, "USAGE: monty file\n");
+    return (EXIT_FAILURE);
 }
 
-void pall() {
-    int i;
-    for (i = top; i >= 0; i--) {
-        printf("%d\n", stack[i]);
-    }
+/**
+ * malloc_error - Prints malloc error messages.
+ *
+ * Return: Always returns EXIT_FAILURE.
+ */
+int malloc_error(void)
+{
+    fprintf(stderr, "Error: malloc failed\n");
+    return (EXIT_FAILURE);
 }
 
-int main() {
-    char opcode[10];
-    int value;
+/**
+ * f_open_error - Prints file opening error messages with the filename.
+ * @filename: Name of the file that failed to open.
+ *
+ * Return: Always returns EXIT_FAILURE.
+ */
+int f_open_error(char *filename)
+{
+    fprintf(stderr, "Error: Can't open file %s\n", filename);
+    return (EXIT_FAILURE);
+}
 
-    while (1) {
-        if (scanf("%s", opcode) == EOF) {
-            break;
-        }
+/**
+ * unknown_op_error - Prints unknown instruction error messages.
+ * @opcode: Opcode where the error occurred.
+ * @line_number: Line number in Monty bytecodes file where the error occurred.
+ *
+ * Return: Always returns EXIT_FAILURE.
+ */
+int unknown_op_error(char *opcode, unsigned int line_number)
+{
+    fprintf(stderr, "L%u: unknown instruction %s\n", line_number, opcode);
+    return (EXIT_FAILURE);
+}
 
-        if (strcmp(opcode, "push") == 0) {
-            if (scanf("%d", &value) != 1) {
-                fprintf(stderr, "Usage: push integer\n");
-                exit(EXIT_FAILURE);
-            }
-            push(value);
-        } else if (strcmp(opcode, "pall") == 0) {
-            pall();
-        } else {
-            fprintf(stderr, "Unknown opcode: %s\n", opcode);
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    return 0;
+/**
+ * no_int_error - Prints invalid monty_push argument error messages.
+ * @line_number: Line number in the Monty bytecodes file where the error occurred.
+ *
+ * Return: Always returns EXIT_FAILURE.
+ */
+int no_int_error(unsigned int line_number)
+{
+    fprintf(stderr, "L%u: usage: push integer\n", line_number);
+    return (EXIT_FAILURE);
 }
 
